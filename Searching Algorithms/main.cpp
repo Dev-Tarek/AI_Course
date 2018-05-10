@@ -5,14 +5,22 @@
 #include <vector>
 using namespace std;
 
+// This vector will be used to
+// save visited states when needed.
 vector<string> visited;
+
+// Global goal state
 string goal = "187206345";
 
+// Node to represent a single state
 struct node{
     node* parent;
     string state;
-    int depth, action, cost; // 1 Up, 2 Right, 3 Down, 4 Left
-    node()
+    int depth, action, cost; 
+	
+	// Action would be: 1 Up, 2 Right, 3 Down or 4 Left
+    
+	node()
     {
         depth = 0;
         action = 0;
@@ -21,6 +29,9 @@ struct node{
     }
 };
 
+// This heuristic function counts number
+// of blocks that are not in place.
+
 int heuristic(string goal, string state){
     int h = 0;
     for(int i=0; i<state.size(); i++)
@@ -28,18 +39,22 @@ int heuristic(string goal, string state){
     return h;
 }
 
+// Compare function for UCS sort
 bool ucs_cmp(node* i, node* j){
     return i->cost < j->cost;
 }
 
+// Compare function for Greedy search sort
 bool heuristic_cmp(node* i, node* j){
     return heuristic(goal, i->state) < heuristic(goal, j->state);
 }
 
+// Compare function for A* search sort
 bool cost_heuristic_cmp(node* i, node* j){
     return i->cost + heuristic(goal, i->state) < j->cost + heuristic(goal, j->state);
 }
 
+// Function to check for visited state in the vector.
 bool is_visited(string state){
     vector<string>::iterator it;
     it = find(visited.begin(), visited.end(), state);
@@ -47,6 +62,7 @@ bool is_visited(string state){
     return true;
 }
 
+// Function to create new state node.
 node* create_node(string State, node* Parent, int Action, int Depth, int Cost = 0){
     if(State == "x") return 0;
     node* Nod = new node();
@@ -58,6 +74,7 @@ node* create_node(string State, node* Parent, int Action, int Depth, int Cost = 
     return Nod;
 }
 
+// Function to create a new state based on action.
 string Move(int dir, string state){
     int i = 0;
     while(state[i]!='0') i++;
@@ -88,6 +105,7 @@ string Move(int dir, string state){
     return state;
 }
 
+// Function to create child nodes holding possible moves.
 vector<node*> expand(node* Nod, bool cumulative_cost = false){
     vector<node *> ex;
     string s = Nod->state;
@@ -100,6 +118,7 @@ vector<node*> expand(node* Nod, bool cumulative_cost = false){
     return ex;
 }
 
+// Breadth First Search
 vector<int> bfs(node* start, string goal){
     int idx = 0;
     vector<int> moves;
@@ -124,6 +143,7 @@ vector<int> bfs(node* start, string goal){
     }
 }
 
+// Depth First Search
 vector<int> dfs(node* start, string goal, int Depth = 10){
     vector<int> moves;
     stack<node* >nodes;
@@ -154,6 +174,7 @@ vector<int> dfs(node* start, string goal, int Depth = 10){
     }
 }
 
+// Uniform Cost Search
 vector<int> ucs(node* start, string goal){
     int idx = 0;
     vector<int> moves;
@@ -179,6 +200,7 @@ vector<int> ucs(node* start, string goal){
 
 }
 
+// Greedy Search
 vector<int> greedy(node* start, string goal){
     int idx = 0;
     vector<int> moves;
@@ -204,6 +226,7 @@ vector<int> greedy(node* start, string goal){
     }
 }
 
+// A* Search
 vector<int> astar(node* start, string goal){
     int idx = 0;
     vector<int> moves;
